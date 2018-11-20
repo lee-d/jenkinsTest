@@ -1,0 +1,27 @@
+@Library('deployment-pipeline-library')
+
+pipeline {
+    agent any
+    triggers {
+        pollSCM 'H/5 * * * *'
+        cron 'H H(0-5) * * *'
+    }
+    environment {
+        SERVICE = 'foo'
+    }
+    options {
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '3'))
+    }
+    stages {
+        stage('Maven Build') {
+            when {
+                anyOf { branch 'test'; branch 'master' }
+            }
+            steps {
+                sh "mvn -B clean verify -DskipTests"
+                archiveArtifacts artifacts: 'target/*.jar'
+            }
+        }
+    }
+}
