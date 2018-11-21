@@ -7,7 +7,7 @@ def getJobs() {
      {
          if (it.vulnerabilities.vulnerability.size()) {
              fileName = it.fileName.text()
-             myDataMap[fileName] = t.vulnerabilities.vulnerability.size()
+             myDataMap[fileName] = it.vulnerabilities.vulnerability.size()
          }
      }
 
