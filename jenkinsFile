@@ -7,8 +7,8 @@ def getJobs() {
 
     analysis.dependencies.dependency.each
      {
-         fileName = it.fileName
-         myDataMap[fileName] = it.description
+         fileName = it.fileName.text()
+         myDataMap[fileName] = it.description.text()
      }
 
     return myDataMap
