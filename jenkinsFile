@@ -12,10 +12,12 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '3'))
     }
     stages {
-        steps {
-            sh "mvn -B clean verify -DskipTests"
-            archiveArtifacts artifacts: 'target/*.jar'
-            dependencyCheckPublisher pattern: 'target/dependency-check-report.*'
+        stage('Maven Build') {
+            steps {
+                sh "mvn -B clean verify -DskipTests"
+                archiveArtifacts artifacts: 'target/*.jar'
+                dependencyCheckPublisher pattern: 'target/dependency-check-report.*'
+            }
         }
     }
 }
