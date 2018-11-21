@@ -23,7 +23,7 @@ pipeline {
                     myDataMap2["myMap2Key2"] = 22 //second value of second map
                     myCustomDataMap["series1"] = myDataMap1
                     myCustomDataMap["series2"] = myDataMap2
-                    step([$class: 'InfluxDbPublisher', target: myTarget, customPrefix: 'myPrefix', customDataMap: myCustomDataMap])
+                    step([$class: 'InfluxDbPublisher', target: 'grafana', customPrefix: 'edeka', customDataMap: myCustomDataMap])
                 }
             }
         }
