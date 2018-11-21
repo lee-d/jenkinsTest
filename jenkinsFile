@@ -19,12 +19,11 @@ pipeline {
 
                     def myDataMap = [:]
                     myDataMap['DependencySize'] = 'analysis.dependencies.size()'
-                    // analysis.dependencies.each
-                    // {
-                    //     fileName = it.@fileName
-                    //     // check
-                    //     myDataMap[fileName] = it.@description
-                    // }
+                    analysis.dependencies.each
+                     {
+                         fileName = it.@fileName
+                         myDataMap[fileName] = it.@description
+                     }
 
                     step([$class: 'InfluxDbPublisher', target: 'grafana', customPrefix: 'test1', customData: myDataMap])
                 }
