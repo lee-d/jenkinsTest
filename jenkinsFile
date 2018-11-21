@@ -11,11 +11,16 @@ pipeline {
         stage('Maven Build') {
             steps {
                 sh "mvn -B clean verify -DskipTests"
-                dependencyCheckPublisher pattern: 'target/*.jar'
+                archiveArtifacts artifacts: 'target/*.jar'
                 dependencyCheckPublisher pattern: 'target/dependency-check-report.*'
 
                 script {
-                    step([$class: 'InfluxDbPublisher', target: 'grafana', customPrefix: null, customDataMap: null])
+                    def analysis = new XmlSlurper().parse(new File("target/dependency-check-report.xml"))
+
+                    def myDataMap = [:]
+                    myDataMap[analysis.projectInfo.name] = analysis.dependencies[0].dependency.fielName
+                    myDataMap[analysis.projectInfo.name] = analysis.dependencies[1].dependency.fielName
+                    step([$class: 'InfluxDbPublisher', target: 'grafana', customPrefix: test1, customDataMap: myDataMap])
                 }
             }
         }
