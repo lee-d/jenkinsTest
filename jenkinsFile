@@ -14,10 +14,10 @@ pipeline {
                 dependencyCheckPublisher pattern: 'target/dependency-check-report.*'
 
                 script {
-                    def myDataMap = [:]
+                    myDataMap = [:]
                     myDataMap['myKey'] = 'aksdfjklasjfdlkakldfjlkajsdk;fjlkaf awsefasdfaj askjfalksjdf kjalkfjd '
                 }
-                step([$class: 'InfluxDbPublisher', customData: myDataMap, customPrefix: 'myData', target: 'grafana'])
+                step([$class: 'InfluxDbPublisher', customData: null, customPrefix: 'myData', target: 'grafana'])
             }
         }
     }
