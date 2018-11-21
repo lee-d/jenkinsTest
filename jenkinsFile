@@ -13,8 +13,10 @@ pipeline {
                 sh "mvn -B clean verify -DskipTests"
                 dependencyCheckPublisher pattern: 'target/dependency-check-report.*'
 
-                def myDataMap = [:]
-                myDataMap['myKey'] = 'aksdfjklasjfdlkakldfjlkajsdk;fjlkaf awsefasdfaj askjfalksjdf kjalkfjd '
+                script {
+                    def myDataMap = [:]
+                    myDataMap['myKey'] = 'aksdfjklasjfdlkakldfjlkajsdk;fjlkaf awsefasdfaj askjfalksjdf kjalkfjd '
+                }
                 step([$class: 'InfluxDbPublisher', customData: customPrefix, customPrefix: 'myData', target: 'grafana'])
             }
         }
