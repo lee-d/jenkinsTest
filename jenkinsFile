@@ -18,8 +18,12 @@ pipeline {
                     def analysis = new XmlSlurper().parse(new File("${workspace}/target/dependency-check-report.xml"))
 
                     def myDataMap = [:]
-                    myDataMap['DependencySize'] = analysis.dependencies.size()
-
+                    myDataMap['DependencySize'] = analysis.dependencies.dependency.size()
+                    analysis.dependencies.dependency.each
+                     {
+                         fileName = it.fileName
+                         myDataMap[fileName] = it.description
+                     }
 
                     step([$class: 'InfluxDbPublisher', target: 'grafana', customPrefix: 'test1', customData: myDataMap])
                 }
