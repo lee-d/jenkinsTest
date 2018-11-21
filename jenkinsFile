@@ -11,19 +11,11 @@ pipeline {
         stage('Maven Build') {
             steps {
                 sh "mvn -B clean verify -DskipTests"
+                dependencyCheckPublisher pattern: 'target/*.jar'
                 dependencyCheckPublisher pattern: 'target/dependency-check-report.*'
 
                 script {
-                    def myDataMap1 = [:]
-                    def myDataMap2 = [:]
-                    def myCustomDataMap = [:]
-                    myDataMap1["myMap1Key1"] = 11 //first value of first map
-                    myDataMap1["myMap1Key2"] = 12 //second value of first map
-                    myDataMap2["myMap2Key1"] = 21 //first value of second map
-                    myDataMap2["myMap2Key2"] = 22 //second value of second map
-                    myCustomDataMap["series1"] = myDataMap1
-                    myCustomDataMap["series2"] = myDataMap2
-                    step([$class: 'InfluxDbPublisher', target: 'grafana', customPrefix: 'edeka', customDataMap: myCustomDataMap])
+                    step([$class: 'InfluxDbPublisher', target: 'grafana', customPrefix: null, customDataMap: null])
                 }
             }
         }
