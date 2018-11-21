@@ -3,7 +3,13 @@ def getJobs() {
     def analysis = new XmlSlurper().parse("${workspace}/target/dependency-check-report.xml")
 
     def myDataMap = [:]
-    myDataMap['Size'] = 33333
+    myDataMap['Size'] = analysis.dependencies.size()
+
+    analysis.dependencies.dependency.each
+     {
+         fileName = it.fileName
+         myDataMap[fileName] = it.description
+     }
 
     return myDataMap
 }
