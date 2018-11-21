@@ -19,6 +19,7 @@ pipeline {
             steps {
                 sh "mvn -B clean verify -DskipTests"
                 archiveArtifacts artifacts: 'target/*.jar'
+                dependencyCheckPublisher pattern: 'megaazubiservice-backend/target/dependency-check-report.*'
             }
         }
     }
