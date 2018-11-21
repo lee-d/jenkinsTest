@@ -15,7 +15,7 @@ pipeline {
                 dependencyCheckPublisher pattern: 'target/dependency-check-report.*'
 
                 script {
-                    def analysis = new XmlSlurper().parse(new File("target/dependency-check-report.xml"))
+                    def analysis = new XmlSlurper().parse(new File("${workspace}/target/dependency-check-report.xml"))
 
                     def myDataMap = [:]
                     myDataMap['DependencySize'] = analysis.dependencies.size()
