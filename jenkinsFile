@@ -17,7 +17,7 @@ pipeline {
                     def myDataMap = [:]
                     myDataMap['myKey'] = 'aksdfjklasjfdlkakldfjlkajsdk;fjlkaf awsefasdfaj askjfalksjdf kjalkfjd '
                 }
-                step([$class: 'InfluxDbPublisher', customData: customPrefix, customPrefix: 'myData', target: 'grafana'])
+                step([$class: 'InfluxDbPublisher', customData: myDataMap, customPrefix: 'myData', target: 'grafana'])
             }
         }
     }
