@@ -15,8 +15,6 @@ pipeline {
                 dependencyCheckPublisher pattern: 'target/dependency-check-report.*'
 
                 script {
-                    def analysis = new XmlSlurper().parse(new File("target/dependency-check-report.xml"))
-
                     def xml = readFile "target/dependency-check-report.xml"
                     // XmlParser may kick off about xml prolog if you dont read xml into string
                     def analysis = new XmlParser().parseText(xml)
