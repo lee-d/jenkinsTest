@@ -15,14 +15,13 @@ pipeline {
                 dependencyCheckPublisher pattern: 'target/dependency-check-report.*'
 
                 script {
-                    def xml = readFile "target/dependency-check-report.xml"
-                    // XmlParser may kick off about xml prolog if you dont read xml into string
-                    def analysis = new XmlParser().parseText(xml)
+                    def analysis = new XmlSlurper().parseText("target/dependency-check-report.xml")
 
                     def myDataMap = [:]
-                    analysis.dependencies.dependency.each
+                    myDataMap['DependencySize'] = analysis.dependencies.size()
+                    analysis.dependencies.each
                     {
-                        fileName = it.@fielName
+                        fileName = it.@fileName
                         // check
                         myDataMap[fileName] = it.@description
                     }
