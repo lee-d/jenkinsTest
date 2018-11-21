@@ -1,3 +1,13 @@
+@NonCPS
+def getJobs() {
+    def analysis = new XmlSlurper().parse("${workspace}/target/dependency-check-report.xml")
+
+    def myDataMap = [:]
+    myDataMap['Size'] = 33333
+
+    return myDataMap
+}
+
 pipeline {
     agent any
     triggers {
@@ -15,11 +25,8 @@ pipeline {
                 dependencyCheckPublisher pattern: 'target/dependency-check-report.*'
 
                 script {
-                    def analysis = new XmlSlurper().parse("${workspace}/target/dependency-check-report.xml")
-
-                    def myDataMap = [:]
-                    myDataMap['Size'] = 33333
-                    step([$class: 'InfluxDbPublisher', target: 'grafana', customPrefix: 'test1', customData: myDataMap])
+                    def result = getJobs()
+                    step([$class: 'InfluxDbPublisher', target: 'grafana', customPrefix: 'test1', customData: result])
                 }
             }
         }
