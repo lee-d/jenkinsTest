@@ -1,5 +1,3 @@
-@Library('deployment-pipeline-library')
-
 pipeline {
     agent any
     triggers {
