@@ -17,10 +17,19 @@ pipeline {
                 script {
                     def analysis = new XmlSlurper().parse(new File("target/dependency-check-report.xml"))
 
+                    def xml = readFile "target/dependency-check-report.xml"
+                    // XmlParser may kick off about xml prolog if you dont read xml into string
+                    def analysis = new XmlParser().parseText(xml)
+
                     def myDataMap = [:]
-                    myDataMap[analysis.projectInfo.name] = analysis.dependencies[0].dependency.fielName
-                    myDataMap[analysis.projectInfo.name] = analysis.dependencies[1].dependency.fielName
-                    step([$class: 'InfluxDbPublisher', target: 'grafana', customPrefix: test1, customDataMap: myDataMap])
+                    analysis.dependencies.dependency.each
+                    {
+                        fileName = it.@fielName
+                        // check
+                        myDataMap[fileName] = it.@description
+                    }
+
+                    step([$class: 'InfluxDbPublisher', target: 'grafana', customPrefix: 'test1', customDataMap: myDataMap])
                 }
             }
         }
