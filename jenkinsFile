@@ -2,25 +2,37 @@
 def getVulnerabilityReport() {
     def analysis = new XmlSlurper().parse("${workspace}/target/dependency-check-report.xml")
 
-    def myDataMap = [:]
-    def myCustomDataMap = [:]
+    def highSeverityMap = [:]
+    def highestSeverityMap = [:]
+    def normalSeverityMap = [:]
+    def dependencyCheckMap = [:]
 
     analysis.dependencies.dependency.each
      {
-         if (it.vulnerabilities.vulnerability.size()) {
-            def isHigh = false
-             it.vulnerabilities.vulnerability.each {
-               isHigh = isHigh || it.severity.text().equals('High')
-             }
-             if (isHigh) {
-               fileName = it.fileName.text()
-               myDataMap[fileName] = it.vulnerabilities.vulnerability.size()
-             }
-         }
+        def highSeverityCount = 0
+        def highestSeverityCount = 0
+        def normalSeverityCount = 0
+
+        highSeverityCount = it.vulnerabilities.vulnerability.count {
+          it.severity.text().toLowerCase().equals('high')
+        }
+        highestSeverityCount = it.vulnerabilities.vulnerability.count {
+          it.severity.text().toLowerCase().equals('highest')
+        }
+        normalSeverityCount = it.vulnerabilities.vulnerability.count {
+          it.severity.text().toLowerCase().equals('medium')
+        }
+
+        def projectName = analysis.projectInfo.artifactID.text()
+       highSeverityMap[projectName] = highSeverityCount
+       highestSeverityMap[projectName] = highestSeverityCount
+       normalSeverityMap[projectName] = normalSeverityCount
      }
 
-    myCustomDataMap['dep-check-report'] = myDataMap
-    return myCustomDataMap
+    dependencyCheckMap['high-severity'] = highSeverityMap
+    dependencyCheckMap['highest-severity'] = highestSeverityMap
+    dependencyCheckMap['normal-severity'] = normalSeverityMap
+    return dependencyCheckMap
 }
 
 pipeline {
