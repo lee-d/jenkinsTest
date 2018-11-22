@@ -52,10 +52,8 @@ def getVulnerabilityReport() {
     dependencyCheckMap['high-severity'] = highSeverityMap
     dependencyCheckMap['highest-severity'] = highestSeverityMap
     dependencyCheckMap['normal-severity'] = normalSeverityMap
-    return dependencyCheckMap
 
-    def result = getVulnerabilityReport()
-    step([$class: 'InfluxDbPublisher', target: 'grafana', selectedTarget: 'grafana', customPrefix: null, customDataMap: result])
+    step([$class: 'InfluxDbPublisher', target: 'grafana', selectedTarget: 'grafana', customPrefix: null, customDataMap: dependencyCheckMap])
 }
 
 pipeline {
