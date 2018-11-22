@@ -14,12 +14,10 @@ def getVulnerabilityReport() {
     def projectName = analysis.projectInfo.artifactID.text()
 
     analysis.dependencies.dependency.each {
-       highSeverityCount = it.vulnerabilities.vulnerability.collect {
-         it.severity
-       }.count {
+       highSeverityCount = highSeverityCount + it.vulnerabilities.vulnerability.count {
           it.severity.text().toLowerCase().equals('high')
        }
-       highestSeverityCount = it.vulnerabilities.vulnerability.count {
+       highestSeverityCount = highestSeverityCount + it.vulnerabilities.vulnerability.count {
          it.severity.text().toLowerCase().equals('highest')
        }
 
