@@ -15,7 +15,7 @@ pipeline {
                 sh "mvn -B clean verify -DskipTests"
                 archiveArtifacts artifacts: 'target/*.jar'
                 dependencyCheckPublisher pattern: 'target/dependency-check-report.*'
-                publishVulnerabilityReport()
+                publishDependencyCheckToGrafana()
             }
         }
     }
