@@ -11,6 +11,7 @@ def getVulnerabilityReport() {
     def highestSeverityCount = 0
     def normalSeverityCount = 0
     def desc = ""
+    def projectName = analysis.projectInfo.artifactID.text()
 
     analysis.dependencies.dependency.each {
        highSeverityCount = it.vulnerabilities.vulnerability.collect {
@@ -29,7 +30,6 @@ def getVulnerabilityReport() {
                          desc + it.severity.text()
                        }
 
-       def projectName = analysis.projectInfo.artifactID.text()
        highSeverityMap[projectName] = highSeverityCount
        highestSeverityMap[projectName] = highestSeverityCount
        normalSeverityMap[projectName] = normalSeverityCount
