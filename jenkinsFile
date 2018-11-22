@@ -11,8 +11,10 @@ def getVulnerabilityReport() {
     def normalSeverityCount = 0
 
     analysis.dependencies.dependency.each {
-       highSeverityCount = it.vulnerabilities.vulnerability.count {
-         it.severity.text().toLowerCase().equals('high')
+       highSeverityCount = it.vulnerabilities.vulnerability.collect {
+         it.severity
+       }.count {
+          it.severity.text().toLowerCase().equals('high')
        }
        highestSeverityCount = it.vulnerabilities.vulnerability.count {
          it.severity.text().toLowerCase().equals('highest')
