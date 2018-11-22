@@ -6,28 +6,26 @@ def getVulnerabilityReport() {
     def highestSeverityMap = [:]
     def normalSeverityMap = [:]
     def dependencyCheckMap = [:]
+    def highSeverityCount = 0
+    def highestSeverityCount = 0
+    def normalSeverityCount = 0
 
-    analysis.dependencies.dependency.each
-     {
-        def highSeverityCount = 0
-        def highestSeverityCount = 0
-        def normalSeverityCount = 0
+    analysis.dependencies.dependency.each {
+       highSeverityCount = it.vulnerabilities.vulnerability.count {
+         it.severity.text().toLowerCase().equals('high')
+       }
+       highestSeverityCount = it.vulnerabilities.vulnerability.count {
+         it.severity.text().toLowerCase().equals('highest')
+       }
+       normalSeverityCount = it.vulnerabilities.vulnerability.count {
+         it.severity.text().toLowerCase().equals('medium')
+       }
 
-        highSeverityCount = it.vulnerabilities.vulnerability.count {
-          it.severity.text().toLowerCase().equals('high')
-        }
-        highestSeverityCount = it.vulnerabilities.vulnerability.count {
-          it.severity.text().toLowerCase().equals('highest')
-        }
-        normalSeverityCount = it.vulnerabilities.vulnerability.count {
-          it.severity.text().toLowerCase().equals('medium')
-        }
-
-        def projectName = analysis.projectInfo.artifactID.text()
+       def projectName = analysis.projectInfo.artifactID.text()
        highSeverityMap[projectName] = highSeverityCount
        highestSeverityMap[projectName] = highestSeverityCount
        normalSeverityMap[projectName] = normalSeverityCount
-     }
+    }
 
     dependencyCheckMap['high-severity'] = highSeverityMap
     dependencyCheckMap['highest-severity'] = highestSeverityMap
