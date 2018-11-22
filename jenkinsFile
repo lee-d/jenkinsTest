@@ -19,7 +19,7 @@ def getVulnerabilityReport() {
          }
      }
 
-    myCustomDataMap[analysis.projectInfo.artifactID.text()] = myDataMap
+    myCustomDataMap['dep-check-report'] = myDataMap
     return myCustomDataMap
 }
 
@@ -41,7 +41,7 @@ pipeline {
 
                 script {
                     def result = getVulnerabilityReport()
-                    step([$class: 'InfluxDbPublisher', target: 'grafana', customPrefix: 'test1', customDataMap: result])
+                    step([$class: 'InfluxDbPublisher', target: 'grafana', customPrefix: null, customDataMap: result])
                 }
             }
         }
