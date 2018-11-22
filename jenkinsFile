@@ -22,8 +22,11 @@ def getVulnerabilityReport() {
        highestSeverityCount = it.vulnerabilities.vulnerability.count {
          it.severity.text().toLowerCase().equals('highest')
        }
-       normalSeverityCount = it.vulnerabilities.vulnerability.count {
-         it.severity.text().toLowerCase().equals('medium')
+
+       it.vulnerabilities.vulnerability.each {
+          if (it.severity.text().toLowerCase().equals('medium')) {
+            normalSeverityCount++
+          }
        }
 
        it.vulnerabilities.vulnerability.each {
@@ -33,7 +36,6 @@ def getVulnerabilityReport() {
        highSeverityMap[projectName] = highSeverityCount
        highestSeverityMap[projectName] = highestSeverityCount
        normalSeverityMap[projectName] = normalSeverityCount
-       blaMap[projectName] = desc
     }
     blaMap[projectName] = desc
 
