@@ -19,7 +19,7 @@ def getVulnerabilityReport() {
          }
      }
 
-    myCustomDataMap[analysis.projectInfo.artifactID] = myDataMap
+    myCustomDataMap[analysis.projectInfo.artifactID.text()] = myDataMap
     return myCustomDataMap
 }
 
