@@ -3,15 +3,24 @@ def getJobs() {
     def analysis = new XmlSlurper().parse("${workspace}/target/dependency-check-report.xml")
 
     def myDataMap = [:]
+
     analysis.dependencies.dependency.each
      {
          if (it.vulnerabilities.vulnerability.size()) {
-             fileName = it.fileName.text()
-             myDataMap[fileName] = it.vulnerabilities.vulnerability.size()
+            def isHigh = false
+             it.it.vulnerabilities.vulnerability.each { vul ->
+               isHigh = isHigh || vul.severity.text() === 'High')
+             }
+             if (isHigh) {
+               fileName = it.fileName.text()
+               myDataMap[fileName] = it.vulnerabilities.vulnerability.size()
+             }
          }
      }
 
-    return myDataMap
+    def myCustomDataMap = [:]
+    myCustomDataMap[analysis.projectInfo.artifactID] = myDataMap
+    return myCustomDataMap
 }
 
 pipeline {
@@ -32,7 +41,7 @@ pipeline {
 
                 script {
                     def result = getJobs()
-                    step([$class: 'InfluxDbPublisher', target: 'grafana', customPrefix: 'test1', customData: result])
+                    step([$class: 'InfluxDbPublisher', target: 'grafana', customPrefix: 'test1', customDataMap: result])
                 }
             }
         }
