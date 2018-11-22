@@ -29,7 +29,7 @@ def getVulnerabilityReport() {
        normalSeverityMap[projectName] = normalSeverityCount
     }
 
-    dependencyCheckMap['high-severity'] = highSeverityMap
+    dependencyCheckMap['high-severity'] = 100
     dependencyCheckMap['highest-severity'] = highestSeverityMap
     dependencyCheckMap['normal-severity'] = normalSeverityMap
     return dependencyCheckMap
