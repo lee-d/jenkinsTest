@@ -1,8 +1,9 @@
 @NonCPS
-def getJobs() {
+def getVulnerabilityReport() {
     def analysis = new XmlSlurper().parse("${workspace}/target/dependency-check-report.xml")
 
     def myDataMap = [:]
+    def myCustomDataMap = [:]
 
     analysis.dependencies.dependency.each
      {
@@ -18,7 +19,6 @@ def getJobs() {
          }
      }
 
-    def myCustomDataMap = [:]
     myCustomDataMap[analysis.projectInfo.artifactID] = myDataMap
     return myCustomDataMap
 }
@@ -40,7 +40,7 @@ pipeline {
                 dependencyCheckPublisher pattern: 'target/dependency-check-report.*'
 
                 script {
-                    def result = getJobs()
+                    def result = getVulnerabilityReport()
                     step([$class: 'InfluxDbPublisher', target: 'grafana', customPrefix: 'test1', customDataMap: result])
                 }
             }
