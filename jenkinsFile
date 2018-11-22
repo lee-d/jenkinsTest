@@ -1,46 +1,35 @@
 @NonCPS
 def getVulnerabilityReport() {
     def analysis = new XmlSlurper().parse("${workspace}/target/dependency-check-report.xml")
-
-    def highSeverityMap = [:]
-    def highestSeverityMap = [:]
-    def normalSeverityMap = [:]
-    def dependencyCheckMap = [:]
-    def blaMap = [:]
-    def highSeverityCount = 0
-    def highestSeverityCount = 0
-    def normalSeverityCount = 0
-    def desc = ""
     def projectName = analysis.projectInfo.artifactID.text()
 
+    def dependencyCheckMap = [:]
+    def highestSeverityMap = [:]
+    def highSeverityMap = [:]
+    def normalSeverityMap = [:]
+    def highestSeverityCount = 0
+    def highSeverityCount = 0
+    def normalSeverityCount = 0
+
     analysis.dependencies.dependency.each {
-       highSeverityCount = highSeverityCount + it.vulnerabilities.vulnerability.count {
-          it.severity.text().toLowerCase().equals('high')
-       }
        highestSeverityCount = highestSeverityCount + it.vulnerabilities.vulnerability.count {
          it.severity.text().toLowerCase().equals('highest')
        }
-
-       it.vulnerabilities.vulnerability.each {
-          if (it.severity.text().toLowerCase().equals('medium')) {
-            normalSeverityCount++
-          }
+       highSeverityCount = highSeverityCount + it.vulnerabilities.vulnerability.count {
+          it.severity.text().toLowerCase().equals('high')
        }
-
-       it.vulnerabilities.vulnerability.each {
-                         desc + it.severity.text()
-                       }
+       normalSeverityCount = normalSeverityCount + it.vulnerabilities.vulnerability.count {
+        it.severity.text().toLowerCase().equals('medium')
+      }
 
        highSeverityMap[projectName] = highSeverityCount
        highestSeverityMap[projectName] = highestSeverityCount
        normalSeverityMap[projectName] = normalSeverityCount
     }
-    blaMap[projectName] = desc
 
     dependencyCheckMap['high-severity'] = highSeverityMap
     dependencyCheckMap['highest-severity'] = highestSeverityMap
     dependencyCheckMap['normal-severity'] = normalSeverityMap
-    dependencyCheckMap['test'] = blaMap
     return dependencyCheckMap
 }
 
