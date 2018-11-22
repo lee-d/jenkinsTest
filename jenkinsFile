@@ -24,15 +24,20 @@ def getVulnerabilityReport() {
          it.severity.text().toLowerCase().equals('medium')
        }
 
-       def blabla = highSeverityCount = it.vulnerabilities.vulnerability.collect {
+       def blabla = it.vulnerabilities.vulnerability.collect {
                          it.severity
                        }
+       def desc = ""
+       blabla.each {
+            desc + it.text()
+       }
+
 
        def projectName = analysis.projectInfo.artifactID.text()
        highSeverityMap[projectName] = highSeverityCount
        highestSeverityMap[projectName] = highestSeverityCount
        normalSeverityMap[projectName] = normalSeverityCount
-       blaMap[projectName] = blabla
+       blaMap[projectName] = desc
     }
 
     dependencyCheckMap['high-severity'] = highSeverityMap
