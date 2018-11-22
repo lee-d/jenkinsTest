@@ -10,7 +10,7 @@ def getVulnerabilityReport() {
          if (it.vulnerabilities.vulnerability.size()) {
             def isHigh = false
              it.vulnerabilities.vulnerability.each {
-               isHigh = isHigh || it.severity.text() === 'High'
+               isHigh = isHigh || it.severity.text().equals('High')
              }
              if (isHigh) {
                fileName = it.fileName.text()
