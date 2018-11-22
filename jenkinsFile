@@ -1,5 +1,27 @@
 @NonCPS
 def getVulnerabilityReport() {
+    def influxdb = Jenkins.instance.getDescriptorByType(jenkinsci.plugins.influxdb.DescriptorImpl)
+
+    // Create target
+    def target = new jenkinsci.plugins.influxdb.models.Target()
+
+    // Set target details
+    // Mandatory fields
+    target.description = 'grafana'
+    target.url = 'http://172.17.0.1:8086'
+    target.username = 'admin'
+    target.password = 'admin'
+    target.database = 'test'
+    influxdb.addTarget(target)
+    influxdb.save()
+
+    // Write stuff to InfluxDB
+    // NOTE! If you have more targets configured in Jenkins, it's safer to add "selectedTarget" parameter to the InfluxDB step to ensure
+    // data is sent to the correct target.
+    // step([$class: 'InfluxDbPublisher', target: 'myNewTarget', selectedTarget: 'myNewTarget', customPrefix: 'myPrefix', customData: myDataMap])
+
+    // Remove a target by using the target description field value
+
     def analysis = new XmlSlurper().parse("${workspace}/target/dependency-check-report.xml")
     def projectName = analysis.projectInfo.artifactID.text()
 
@@ -31,6 +53,9 @@ def getVulnerabilityReport() {
     dependencyCheckMap['highest-severity'] = highestSeverityMap
     dependencyCheckMap['normal-severity'] = normalSeverityMap
     return dependencyCheckMap
+
+    def result = getVulnerabilityReport()
+    step([$class: 'InfluxDbPublisher', target: 'grafana', selectedTarget: 'grafana', customPrefix: null, customDataMap: result])
 }
 
 pipeline {
@@ -48,11 +73,7 @@ pipeline {
                 sh "mvn -B clean verify -DskipTests"
                 archiveArtifacts artifacts: 'target/*.jar'
                 dependencyCheckPublisher pattern: 'target/dependency-check-report.*'
-
-                script {
-                    def result = getVulnerabilityReport()
-                    step([$class: 'InfluxDbPublisher', target: 'grafana', customPrefix: null, customDataMap: result])
-                }
+                getVulnerabilityReport()
             }
         }
     }
