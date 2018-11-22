@@ -9,7 +9,7 @@ def getJobs() {
          if (it.vulnerabilities.vulnerability.size()) {
             def isHigh = false
              it.it.vulnerabilities.vulnerability.each { vul ->
-               isHigh = isHigh || vul.severity.text() === 'High')
+               isHigh = isHigh || vul.severity.text() === 'High'
              }
              if (isHigh) {
                fileName = it.fileName.text()
