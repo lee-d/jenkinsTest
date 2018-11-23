@@ -15,7 +15,17 @@ pipeline {
                 sh "mvn -B clean verify -DskipTests"
                 archiveArtifacts artifacts: 'target/*.jar'
                 dependencyCheckPublisher pattern: 'target/dependency-check-report.*'
-                publishDependencyCheckToGrafana()
+
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins_codefluegel_influxdb',
+                                    usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                        publishDependencyCheckToGrafana(
+                            databaseName: 'jenkins_codefluegel',
+                            url: 'http://10.30.2.66:8086',
+                            username: env.USERNAME,
+                            password: env.PASSWORD,
+                            reportPath: '${workspace}/target/dependency-check-report.xml'
+                        )
+                  }
             }
         }
     }
