@@ -20,7 +20,7 @@ pipeline {
                                     usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                     publishDependencyCheckDataToGrafana(
                         databaseName: 'jenkins_codefluegel',
-                        url: 'http://localhost:8086',
+                        url: 'http://172.17.0.1:8086',
                         username: env.USERNAME,
                         password: env.PASSWORD,
                         reportPath: "${workspace}/target/dependency-check-report.xml"
