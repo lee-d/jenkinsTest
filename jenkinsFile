@@ -1,4 +1,4 @@
-@Library('deployment-lib') _
+@Library('deployment-lib@feature/test') _
 
 pipeline {
     agent any
