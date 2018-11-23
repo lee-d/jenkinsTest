@@ -23,7 +23,7 @@ pipeline {
                             url: 'http://10.30.2.66:8086',
                             username: env.USERNAME,
                             password: env.PASSWORD,
-                            reportPath: '${workspace}/target/dependency-check-report.xml'
+                            reportPath: "${workspace}/target/dependency-check-report.xml"
                         )
                   }
             }
