@@ -18,14 +18,14 @@ pipeline {
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins_codefluegel_influxdb',
                                     usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                        publishDependencyCheckToGrafana(
-                            databaseName: 'jenkins_codefluegel',
-                            url: 'http://localhost:8086',
-                            username: env.USERNAME,
-                            password: env.PASSWORD,
-                            reportPath: "${workspace}/target/dependency-check-report.xml"
-                        )
-                  }
+                    publishDependencyCheckDataToGrafana(
+                        databaseName: 'jenkins_codefluegel',
+                        url: 'http://localhost:8086',
+                        username: env.USERNAME,
+                        password: env.PASSWORD,
+                        reportPath: "${workspace}/target/dependency-check-report.xml"
+                    )
+                }
             }
         }
     }
